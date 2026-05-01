@@ -6,12 +6,27 @@ BASE_URL = "https://api.worldbank.org/v2"
 YEARS = 20 # how many years of data to fetch
 
 INDICATORS = {
-    "GDP": "NY.GDP.MKTP.CD",
-    "gdp_growth_rate": "NY.GDP.MKTP.KD.ZG",
-    "inflation_cpi": "FP.CPI.TOTL.ZG",
-    "fdi_net_inflows": "BX.KLT.DINV.CD.WD",
-    "population": "SP.POP.TOTL",
+    # Macroeconomic
+    "gdp_current_usd":        "NY.GDP.MKTP.CD",
+    "gdp_growth_rate":        "NY.GDP.MKTP.KD.ZG",
+    "inflation_cpi":          "FP.CPI.TOTL.ZG",
+    "population":             "SP.POP.TOTL",
+
+    # FDI (UNCTAD data served via World Bank)
+    "fdi_net_inflows_usd":    "BX.KLT.DINV.CD.WD",
+    "fdi_net_outflows_usd":   "BM.KLT.DINV.CD.WD",
+
+    # Trade
+    "exports_usd":            "NE.EXP.GNFS.CD",
+    "imports_usd":            "NE.IMP.GNFS.CD",
+    "trade_percent_gdp":      "NE.TRD.GNFS.ZS",
+
+    # Development
+    "gni_per_capita":         "NY.GNP.PCAP.CD",
+    "unemployment_rate":      "SL.UEM.TOTL.ZS",
+    "internet_users_percent": "IT.NET.USER.ZS",
 }
+
 # -----------Fetch Function----------------------------
 def fetch_indicator(indicator_code: str, indicator_name: str) -> list[dict]:
     """Fetches data for a single Wold Bank indicator for Ghana.
