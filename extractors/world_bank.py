@@ -1,9 +1,9 @@
 import requests
 
-# ------Configuration ---------------------
-COUNTRY_CODE = "GH"  # Ghana
+# ── Configuration ──────────────────────────────────────────
+COUNTRY_CODE = "GH"
 BASE_URL = "https://api.worldbank.org/v2"
-YEARS = 20 # how many years of data to fetch
+YEARS = 30
 
 INDICATORS = {
     # Macroeconomic
@@ -11,8 +11,9 @@ INDICATORS = {
     "gdp_growth_rate":        "NY.GDP.MKTP.KD.ZG",
     "inflation_cpi":          "FP.CPI.TOTL.ZG",
     "population":             "SP.POP.TOTL",
+    "gni_per_capita":         "NY.GNP.PCAP.CD",
 
-    # FDI (UNCTAD data served via World Bank)
+    # FDI
     "fdi_net_inflows_usd":    "BX.KLT.DINV.CD.WD",
     "fdi_net_outflows_usd":   "BM.KLT.DINV.CD.WD",
 
@@ -21,18 +22,21 @@ INDICATORS = {
     "imports_usd":            "NE.IMP.GNFS.CD",
     "trade_percent_gdp":      "NE.TRD.GNFS.ZS",
 
-    # Development
-    "gni_per_capita":         "NY.GNP.PCAP.CD",
+    # Development & Labour
     "unemployment_rate":      "SL.UEM.TOTL.ZS",
     "internet_users_percent": "IT.NET.USER.ZS",
+
+    # Aid (replaces OECD)
+    "oda_received_usd":       "DT.ODA.ALLD.CD",
 }
 
-# -----------Fetch Function----------------------------
+# ── Fetch Function ─────────────────────────────────────────
 def fetch_indicator(indicator_code: str, indicator_name: str) -> list[dict]:
-    """Fetches data for a single Wold Bank indicator for Ghana.
+    """
+    Fetches data for a single World Bank indicator for Ghana.
     Returns a list of yearly records.
     """
-    url =(
+    url = (
         f"{BASE_URL}/country/{COUNTRY_CODE}"
         f"/indicator/{indicator_code}"
         f"?format=json&per_page={YEARS}"
@@ -40,8 +44,8 @@ def fetch_indicator(indicator_code: str, indicator_name: str) -> list[dict]:
 
     print(f"Fetching {indicator_name} from: {url}")
 
-    response = requests.get(url, timeout=10)
-    response.raise_for_status()  # raises an error if request failed
+    response = requests.get(url, timeout=30)
+    response.raise_for_status()
 
     raw = response.json()
 
@@ -82,7 +86,6 @@ def run() -> list[dict]:
 if __name__ == "__main__":
     data = run()
 
-    # Print first 3 records so we can see what came back
     print("\nSample output:")
     for record in data[:3]:
         print(record)
