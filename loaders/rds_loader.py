@@ -71,6 +71,28 @@ def run(df: pd.DataFrame) -> None:
     load(df)
     print("  Load complete")
 
+# ── Export Function ────────────────────────────────────────
+def export_csv(df: pd.DataFrame, output_dir: str = "exports") -> str:
+    """
+    Exports the clean DataFrame to a timestamped CSV file.
+    """
+    from datetime import datetime
+    import os
+
+    # Create exports folder if it doesn't exist
+    os.makedirs(output_dir, exist_ok=True)
+
+    # Timestamped filename so exports don't overwrite each other
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    filename  = f"gipc_economic_indicators_{timestamp}.csv"
+    filepath  = os.path.join(output_dir, filename)
+
+    df.to_csv(filepath, index=False)
+
+    print(f"  CSV exported: {filepath}")
+    print(f"  Rows: {len(df)} | Columns: {list(df.columns)}")
+
+    return filepath
 
 # ── Entry Point ────────────────────────────────────────────
 if __name__ == "__main__":
@@ -78,8 +100,8 @@ if __name__ == "__main__":
     import os
     sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-    from extractors.world_bank import run as wb_run
-    from extractors.imf        import run as imf_run
+    from extractors.world_bank  import run as wb_run
+    from extractors.imf         import run as imf_run
     from transformers.normalize import run as transform_run
 
     print("Extracting...")
@@ -91,3 +113,6 @@ if __name__ == "__main__":
 
     print("\nLoading...")
     run(df)
+
+    print("\n── Exporting CSV ──────────────────────────────────")
+    export_csv(df)
