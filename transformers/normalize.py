@@ -3,29 +3,65 @@ import pandas as pd
 # ── Unit Definitions ───────────────────────────────────────
 # Tells us the unit for each indicator and whether to convert
 INDICATOR_UNITS = {
-    # World Bank - values are raw, need converting to billions
-    "gdp_current_usd":        {"unit": "USD billions", "source": "world_bank", "scale": 1e-9},
-    "gdp_growth_rate":        {"unit": "percent",      "source": "world_bank", "scale": 1},
-    "inflation_cpi":          {"unit": "percent",      "source": "world_bank", "scale": 1},
-    "population":             {"unit": "persons",      "source": "world_bank", "scale": 1},
-    "gni_per_capita":         {"unit": "USD",          "source": "world_bank", "scale": 1},
-    "fdi_net_inflows_usd":    {"unit": "USD billions", "source": "world_bank", "scale": 1e-9},
-    "fdi_net_outflows_usd":   {"unit": "USD billions", "source": "world_bank", "scale": 1e-9},
-    "exports_usd":            {"unit": "USD billions", "source": "world_bank", "scale": 1e-9},
-    "imports_usd":            {"unit": "USD billions", "source": "world_bank", "scale": 1e-9},
-    "trade_percent_gdp":      {"unit": "percent",      "source": "world_bank", "scale": 1},
-    "unemployment_rate":      {"unit": "percent",      "source": "world_bank", "scale": 1},
-    "internet_users_percent": {"unit": "percent",      "source": "world_bank", "scale": 1},
-    "oda_received_usd":       {"unit": "USD billions", "source": "world_bank", "scale": 1e-9},
+    # Macroeconomic
+    "gdp_current_usd":               {"unit": "USD billions",  "source": "world_bank", "scale": 1e-9},
+    "gdp_growth_rate":               {"unit": "percent",       "source": "world_bank", "scale": 1},
+    "inflation_cpi":                 {"unit": "percent",       "source": "world_bank", "scale": 1},
+    "population":                    {"unit": "persons",       "source": "world_bank", "scale": 1},
+    "gni_per_capita":                {"unit": "USD",           "source": "world_bank", "scale": 1},
 
-    # IMF - values already in billions
-    "gdp_current_usd_imf":    {"unit": "USD billions", "source": "imf",        "scale": 1},
-    "gdp_growth_rate_imf":    {"unit": "percent",      "source": "imf",        "scale": 1},
-    "inflation_rate":         {"unit": "percent",      "source": "imf",        "scale": 1},
-    "current_account_usd":    {"unit": "USD billions", "source": "imf",        "scale": 1},
-    "government_debt_gdp":    {"unit": "percent",      "source": "imf",        "scale": 1},
+    # Fiscal & Debt
+    "government_debt_percent_gdp":   {"unit": "percent",       "source": "world_bank", "scale": 1},
+    "external_debt_stocks_usd":      {"unit": "USD billions",  "source": "world_bank", "scale": 1e-9},
+    "fiscal_deficit_percent_gdp":    {"unit": "percent",       "source": "world_bank", "scale": 1},
+    "tax_revenue_percent_gdp":       {"unit": "percent",       "source": "world_bank", "scale": 1},
+
+    # FDI
+    "fdi_net_inflows_usd":           {"unit": "USD billions",  "source": "world_bank", "scale": 1e-9},
+    "fdi_net_outflows_usd":          {"unit": "USD billions",  "source": "world_bank", "scale": 1e-9},
+
+    # Trade
+    "exports_usd":                   {"unit": "USD billions",  "source": "world_bank", "scale": 1e-9},
+    "imports_usd":                   {"unit": "USD billions",  "source": "world_bank", "scale": 1e-9},
+    "trade_percent_gdp":             {"unit": "percent",       "source": "world_bank", "scale": 1},
+    "remittances_received_usd":      {"unit": "USD billions",  "source": "world_bank", "scale": 1e-9},
+    "trade_balance_usd":             {"unit": "USD billions",  "source": "calculated", "scale": 1},
+
+    # Investment Climate
+    "real_interest_rate":            {"unit": "percent",       "source": "world_bank", "scale": 1},
+    "exchange_rate_usd":             {"unit": "GHS per USD",   "source": "world_bank", "scale": 1},
+    "credit_private_sector_gdp":     {"unit": "percent",       "source": "world_bank", "scale": 1},
+
+    # Labour & Demographics
+    "unemployment_rate":             {"unit": "percent",       "source": "world_bank", "scale": 1},
+    "youth_unemployment_rate":       {"unit": "percent",       "source": "world_bank", "scale": 1},
+    "labour_force_total":            {"unit": "persons",       "source": "world_bank", "scale": 1},
+
+    # Sectoral
+    "agriculture_value_added_gdp":   {"unit": "percent",       "source": "world_bank", "scale": 1},
+    "manufacturing_value_added_gdp": {"unit": "percent",       "source": "world_bank", "scale": 1},
+
+    # Infrastructure & Digital
+    "internet_users_percent":        {"unit": "percent",       "source": "world_bank", "scale": 1},
+    "electricity_access_percent":    {"unit": "percent",       "source": "world_bank", "scale": 1},
+    "mobile_subscriptions_per_100":  {"unit": "per 100 people","source": "world_bank", "scale": 1},
+
+    # Aid
+    "oda_received_usd":              {"unit": "USD billions",  "source": "world_bank", "scale": 1e-9},
+
+    # IMF indicators
+    "gdp_current_usd_imf":           {"unit": "USD billions",  "source": "imf",        "scale": 1},
+    "gdp_growth_rate_imf":           {"unit": "percent",       "source": "imf",        "scale": 1},
+    "inflation_rate":                {"unit": "percent",       "source": "imf",        "scale": 1},
+    "current_account_usd":           {"unit": "USD billions",  "source": "imf",        "scale": 1},
+    "government_debt_gdp":           {"unit": "percent",       "source": "imf",        "scale": 1},
+
+    # Governance
+    "political_stability":           {"unit": "index",         "source": "world_bank", "scale": 1},
+    "rule_of_law":                   {"unit": "index",         "source": "world_bank", "scale": 1},
+    "control_of_corruption":         {"unit": "index",         "source": "world_bank", "scale": 1},
+    "government_effectiveness":      {"unit": "index",         "source": "world_bank", "scale": 1},
 }
-
 # IMF indicators that overlap with World Bank — we rename to avoid confusion
 IMF_RENAME = {
     "gdp_current_usd": "gdp_current_usd_imf",
@@ -138,6 +174,19 @@ def run(world_bank_data: list[dict], imf_data: list[dict]) -> pd.DataFrame:
 
     print("\n── Cleaning & normalising ────────────────────────")
     df = clean(all_raw)
+
+    # ── Calculate Trade Balance ────────────────────────────
+    exports  = df[df["indicator_name"] == "exports_usd"][["year", "value"]].rename(columns={"value": "exports"})
+    imports  = df[df["indicator_name"] == "imports_usd"][["year", "value"]].rename(columns={"value": "imports"})
+    trade    = exports.merge(imports, on="year")
+    trade["value"]          = (trade["exports"] - trade["imports"]).round(4)
+    trade["indicator_name"] = "trade_balance_usd"
+    trade["source"]         = "calculated"
+    trade["country"]        = "Ghana"
+    trade["unit"]           = "USD billions"
+    trade = trade[["indicator_name", "source", "country", "year", "value", "unit"]]
+    df = pd.concat([df, trade], ignore_index=True)
+    print(f"  Trade balance calculated: {len(trade)} records added")
 
     print(f"\n── Final dataset ─────────────────────────────────")
     print(f"  Shape             : {df.shape}")
