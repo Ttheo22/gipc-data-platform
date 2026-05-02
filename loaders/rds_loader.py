@@ -1,14 +1,20 @@
 import os
+import logging
 import pandas as pd
 from sqlalchemy import create_engine, text
+from sqlalchemy.exc import OperationalError, SQLAlchemyError
 from dotenv import load_dotenv
 
 load_dotenv()
+
+# ── Logging Setup ──────────────────────────────────────────
+logger = logging.getLogger(__name__)
 
 # ── Database Connection ────────────────────────────────────
 def get_engine():
     """
     Creates a SQLAlchemy engine from environment variables.
+    Raises a clear error if credentials are missing.
     """
     db_host = os.getenv("DB_HOST",     "localhost")
     db_port = os.getenv("DB_PORT",     "5432")
@@ -16,103 +22,153 @@ def get_engine():
     db_user = os.getenv("DB_USER",     "postgres")
     db_pass = os.getenv("DB_PASSWORD", "")
 
+    if not db_pass:
+        raise ValueError("DB_PASSWORD is not set in your .env file")
+
     url = f"postgresql+psycopg2://{db_user}:{db_pass}@{db_host}:{db_port}/{db_name}"
     return create_engine(url)
 
 
 # ── Load Function ──────────────────────────────────────────
-def load(df: pd.DataFrame) -> None:
+def load(df: pd.DataFrame) -> bool:
     """
     Loads a clean DataFrame into the economic_indicators table.
-    Uses upsert logic — skips duplicates on (indicator_name, source, country, year).
+    Returns True on success, False on failure.
     """
-    engine = get_engine()
+    if df.empty:
+        logger.error("DataFrame is empty — nothing to load")
+        return False
 
-    # Test connection first
-    with engine.connect() as conn:
-        conn.execute(text("SELECT 1"))
-    print("  Database connection successful")
+    try:
+        engine = get_engine()
+    except ValueError as e:
+        logger.error(f"Configuration error: {e}")
+        return False
 
-    # Write to a staging table first, then upsert to main table
-    df.to_sql(
-        name="economic_indicators_staging",
-        con=engine,
-        if_exists="replace",   # always replace staging
-        index=False,
-        method="multi",        # faster bulk insert
-    )
-    print(f"  Staged {len(df)} records")
+    # Test connection
+    try:
+        with engine.connect() as conn:
+            conn.execute(text("SELECT 1"))
+        logger.info("Database connection successful")
+    except OperationalError as e:
+        logger.error(f"Cannot connect to database: {e}")
+        logger.error("Check that PostgreSQL is running and your .env credentials are correct")
+        return False
+
+    # Stage the data
+    try:
+        df.to_sql(
+            name="economic_indicators_staging",
+            con=engine,
+            if_exists="replace",
+            index=False,
+            method="multi",
+        )
+        logger.info(f"Staged {len(df)} records")
+    except SQLAlchemyError as e:
+        logger.error(f"Failed to write staging table: {e}")
+        return False
 
     # Upsert from staging to main table
-    upsert_sql = text("""
-        INSERT INTO economic_indicators
-            (indicator_name, source, country, year, value, unit)
-        SELECT
-            indicator_name, source, country, year, value, unit
-        FROM
-            economic_indicators_staging
-        ON CONFLICT (indicator_name, source, country, year)
-        DO NOTHING;
-    """)
+    try:
+        upsert_sql = text("""
+            INSERT INTO economic_indicators
+                (indicator_name, source, country, year, value, unit)
+            SELECT
+                indicator_name, source, country, year, value, unit
+            FROM
+                economic_indicators_staging
+            ON CONFLICT (indicator_name, source, country, year)
+            DO NOTHING;
+        """)
 
-    with engine.begin() as conn:
-        result = conn.execute(upsert_sql)
-        print(f"  Rows inserted: {result.rowcount}")
+        with engine.begin() as conn:
+            result = conn.execute(upsert_sql)
+            logger.info(f"Rows inserted: {result.rowcount}")
 
-    # Clean up staging table
-    with engine.begin() as conn:
-        conn.execute(text("DROP TABLE IF EXISTS economic_indicators_staging"))
-    print("  Staging table cleaned up")
+    except SQLAlchemyError as e:
+        logger.error(f"Upsert failed: {e}")
+        return False
+
+    # Clean up staging
+    try:
+        with engine.begin() as conn:
+            conn.execute(text("DROP TABLE IF EXISTS economic_indicators_staging"))
+        logger.info("Staging table cleaned up")
+    except SQLAlchemyError as e:
+        logger.warning(f"Could not drop staging table: {e}")
+
+    return True
+
+
+# ── Export Function ────────────────────────────────────────
+def export_csv(df: pd.DataFrame, output_dir: str = "exports") -> str | None:
+    """
+    Exports the clean DataFrame to a timestamped CSV file.
+    Returns the filepath on success, None on failure.
+    """
+    from datetime import datetime
+
+    if df.empty:
+        logger.error("DataFrame is empty — nothing to export")
+        return None
+
+    try:
+        os.makedirs(output_dir, exist_ok=True)
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        filename  = f"gipc_economic_indicators_{timestamp}.csv"
+        filepath  = os.path.join(output_dir, filename)
+
+        df.to_csv(filepath, index=False)
+        logger.info(f"CSV exported: {filepath}")
+        logger.info(f"Rows: {len(df)} | Columns: {list(df.columns)}")
+        return filepath
+
+    except OSError as e:
+        logger.error(f"Failed to write CSV: {e}")
+        return None
 
 
 # ── Run Function ───────────────────────────────────────────
-def run(df: pd.DataFrame) -> None:
-    print("\n── Loading to PostgreSQL ──────────────────────────")
-    load(df)
-    print("  Load complete")
+def run(df: pd.DataFrame) -> bool:
+    logger.info("=== Load started ===")
+    success = load(df)
+    if success:
+        logger.info("=== Load complete ===")
+    else:
+        logger.error("=== Load failed ===")
+    return success
 
-# ── Export Function ────────────────────────────────────────
-def export_csv(df: pd.DataFrame, output_dir: str = "exports") -> str:
-    """
-    Exports the clean DataFrame to a timestamped CSV file.
-    """
-    from datetime import datetime
-    import os
-
-    # Create exports folder if it doesn't exist
-    os.makedirs(output_dir, exist_ok=True)
-
-    # Timestamped filename so exports don't overwrite each other
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    filename  = f"gipc_economic_indicators_{timestamp}.csv"
-    filepath  = os.path.join(output_dir, filename)
-
-    df.to_csv(filepath, index=False)
-
-    print(f"  CSV exported: {filepath}")
-    print(f"  Rows: {len(df)} | Columns: {list(df.columns)}")
-
-    return filepath
 
 # ── Entry Point ────────────────────────────────────────────
 if __name__ == "__main__":
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s | %(levelname)s | %(message)s",
+        handlers=[
+            logging.FileHandler("pipeline.log", encoding="utf-8"),
+            logging.StreamHandler()
+        ]
+    )
+
     import sys
-    import os
     sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
     from extractors.world_bank  import run as wb_run
     from extractors.imf         import run as imf_run
     from transformers.normalize import run as transform_run
 
-    print("Extracting...")
+    logger.info("Pipeline started")
+
     wb_data  = wb_run()
     imf_data = imf_run()
 
-    print("\nTransforming...")
     df = transform_run(wb_data, imf_data)
 
-    print("\nLoading...")
-    run(df)
+    success = run(df)
 
-    print("\n── Exporting CSV ──────────────────────────────────")
-    export_csv(df)
+    if success:
+        export_csv(df)
+        logger.info("Pipeline finished successfully")
+    else:
+        logger.error("Pipeline finished with errors — check pipeline.log")

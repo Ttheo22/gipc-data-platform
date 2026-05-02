@@ -1,0 +1,130 @@
+2026-05-02 06:03:35,427 | INFO | === World Bank extraction started ===
+2026-05-02 06:03:35,427 | INFO | Fetching gdp_current_usd (attempt 1)
+2026-05-02 06:03:37,472 | INFO | Fetching gdp_growth_rate (attempt 1)
+2026-05-02 06:03:37,960 | INFO | Fetching inflation_cpi (attempt 1)
+2026-05-02 06:03:38,642 | INFO | Fetching population (attempt 1)
+2026-05-02 06:03:39,118 | INFO | Fetching gni_per_capita (attempt 1)
+2026-05-02 06:03:39,492 | INFO | Fetching fdi_net_inflows_usd (attempt 1)
+2026-05-02 06:03:39,874 | INFO | Fetching fdi_net_outflows_usd (attempt 1)
+2026-05-02 06:03:40,396 | INFO | Fetching exports_usd (attempt 1)
+2026-05-02 06:03:41,131 | INFO | Fetching imports_usd (attempt 1)
+2026-05-02 06:03:41,879 | INFO | Fetching trade_percent_gdp (attempt 1)
+2026-05-02 06:03:42,707 | INFO | Fetching unemployment_rate (attempt 1)
+2026-05-02 06:03:43,555 | INFO | Fetching internet_users_percent (attempt 1)
+2026-05-02 06:03:44,186 | INFO | Fetching oda_received_usd (attempt 1)
+2026-05-02 06:03:44,627 | INFO | === World Bank extraction complete ===
+2026-05-02 06:03:44,627 | INFO |   Succeeded : 13 indicators
+2026-05-02 06:03:44,627 | INFO |   Failed    : 0 indicators
+2026-05-02 06:03:44,628 | INFO |   Total records: 390
+2026-05-02 06:09:31,317 | INFO | === IMF extraction started ===
+2026-05-02 06:09:31,318 | INFO | Fetching gdp_current_usd (attempt 1)
+2026-05-02 06:09:35,678 | INFO | Fetching gdp_growth_rate (attempt 1)
+2026-05-02 06:09:38,851 | INFO | Fetching inflation_rate (attempt 1)
+2026-05-02 06:09:41,947 | INFO | Fetching current_account_usd (attempt 1)
+2026-05-02 06:09:44,160 | INFO | Fetching government_debt_gdp (attempt 1)
+2026-05-02 06:09:46,242 | INFO | === IMF extraction complete ===
+2026-05-02 06:09:46,242 | INFO |   Succeeded : 5 indicators
+2026-05-02 06:09:46,242 | INFO |   Failed    : 0 indicators
+2026-05-02 06:09:46,242 | INFO |   Total records: 250
+2026-05-02 06:13:54,374 | INFO | === IMF extraction started ===
+2026-05-02 06:13:54,374 | INFO | Fetching gdp_current_usd (attempt 1)
+2026-05-02 06:13:56,769 | INFO |   -> 52 records fetched for gdp_current_usd
+2026-05-02 06:13:56,771 | INFO | Fetching gdp_growth_rate (attempt 1)
+2026-05-02 06:14:03,192 | INFO |   -> 52 records fetched for gdp_growth_rate
+2026-05-02 06:14:03,194 | INFO | Fetching inflation_rate (attempt 1)
+2026-05-02 06:14:06,610 | INFO |   -> 52 records fetched for inflation_rate
+2026-05-02 06:14:06,611 | INFO | Fetching current_account_usd (attempt 1)
+2026-05-02 06:14:10,914 | INFO |   -> 52 records fetched for current_account_usd
+2026-05-02 06:14:10,915 | INFO | Fetching government_debt_gdp (attempt 1)
+2026-05-02 06:14:12,954 | INFO |   -> 42 records fetched for government_debt_gdp
+2026-05-02 06:14:12,955 | INFO | === IMF extraction complete ===
+2026-05-02 06:14:12,956 | INFO |   Succeeded : 5 indicators
+2026-05-02 06:14:12,956 | INFO |   Failed    : 0 indicators
+2026-05-02 06:14:12,956 | INFO |   Total records: 250
+2026-05-02 06:14:35,055 | INFO | === World Bank extraction started ===
+2026-05-02 06:14:35,056 | INFO | Fetching gdp_current_usd (attempt 1)
+2026-05-02 06:14:35,448 | INFO |   -> 30 records fetched for gdp_current_usd
+2026-05-02 06:14:35,450 | INFO | Fetching gdp_growth_rate (attempt 1)
+2026-05-02 06:14:35,845 | INFO |   -> 30 records fetched for gdp_growth_rate
+2026-05-02 06:14:35,847 | INFO | Fetching inflation_cpi (attempt 1)
+2026-05-02 06:14:36,242 | INFO |   -> 30 records fetched for inflation_cpi
+2026-05-02 06:14:36,243 | INFO | Fetching population (attempt 1)
+2026-05-02 06:14:36,567 | INFO |   -> 30 records fetched for population
+2026-05-02 06:14:36,568 | INFO | Fetching gni_per_capita (attempt 1)
+2026-05-02 06:14:36,949 | INFO |   -> 30 records fetched for gni_per_capita
+2026-05-02 06:14:36,950 | INFO | Fetching fdi_net_inflows_usd (attempt 1)
+2026-05-02 06:14:37,309 | INFO |   -> 30 records fetched for fdi_net_inflows_usd
+2026-05-02 06:14:37,310 | INFO | Fetching fdi_net_outflows_usd (attempt 1)
+2026-05-02 06:14:37,670 | INFO |   -> 30 records fetched for fdi_net_outflows_usd
+2026-05-02 06:14:37,672 | INFO | Fetching exports_usd (attempt 1)
+2026-05-02 06:14:37,991 | INFO |   -> 30 records fetched for exports_usd
+2026-05-02 06:14:37,993 | INFO | Fetching imports_usd (attempt 1)
+2026-05-02 06:14:38,342 | INFO |   -> 30 records fetched for imports_usd
+2026-05-02 06:14:38,344 | INFO | Fetching trade_percent_gdp (attempt 1)
+2026-05-02 06:14:38,656 | INFO |   -> 30 records fetched for trade_percent_gdp
+2026-05-02 06:14:38,657 | INFO | Fetching unemployment_rate (attempt 1)
+2026-05-02 06:14:38,995 | INFO |   -> 30 records fetched for unemployment_rate
+2026-05-02 06:14:38,996 | INFO | Fetching internet_users_percent (attempt 1)
+2026-05-02 06:14:39,327 | INFO |   -> 30 records fetched for internet_users_percent
+2026-05-02 06:14:39,329 | INFO | Fetching oda_received_usd (attempt 1)
+2026-05-02 06:14:39,669 | INFO |   -> 30 records fetched for oda_received_usd
+2026-05-02 06:14:39,670 | INFO | === World Bank extraction complete ===
+2026-05-02 06:14:39,671 | INFO |   Succeeded : 13 indicators
+2026-05-02 06:14:39,671 | INFO |   Failed    : 0 indicators
+2026-05-02 06:14:39,671 | INFO |   Total records: 390
+2026-05-02 06:17:18,590 | INFO | Pipeline started
+2026-05-02 06:17:18,591 | INFO | === World Bank extraction started ===
+2026-05-02 06:17:18,591 | INFO | Fetching gdp_current_usd (attempt 1)
+2026-05-02 06:17:18,940 | INFO |   -> 30 records fetched for gdp_current_usd
+2026-05-02 06:17:18,942 | INFO | Fetching gdp_growth_rate (attempt 1)
+2026-05-02 06:17:19,242 | INFO |   -> 30 records fetched for gdp_growth_rate
+2026-05-02 06:17:19,244 | INFO | Fetching inflation_cpi (attempt 1)
+2026-05-02 06:17:19,668 | INFO |   -> 30 records fetched for inflation_cpi
+2026-05-02 06:17:19,669 | INFO | Fetching population (attempt 1)
+2026-05-02 06:17:20,059 | INFO |   -> 30 records fetched for population
+2026-05-02 06:17:20,060 | INFO | Fetching gni_per_capita (attempt 1)
+2026-05-02 06:17:20,414 | INFO |   -> 30 records fetched for gni_per_capita
+2026-05-02 06:17:20,415 | INFO | Fetching fdi_net_inflows_usd (attempt 1)
+2026-05-02 06:17:20,711 | INFO |   -> 30 records fetched for fdi_net_inflows_usd
+2026-05-02 06:17:20,712 | INFO | Fetching fdi_net_outflows_usd (attempt 1)
+2026-05-02 06:17:21,186 | INFO |   -> 30 records fetched for fdi_net_outflows_usd
+2026-05-02 06:17:21,194 | INFO | Fetching exports_usd (attempt 1)
+2026-05-02 06:17:21,881 | INFO |   -> 30 records fetched for exports_usd
+2026-05-02 06:17:21,884 | INFO | Fetching imports_usd (attempt 1)
+2026-05-02 06:17:22,739 | INFO |   -> 30 records fetched for imports_usd
+2026-05-02 06:17:22,745 | INFO | Fetching trade_percent_gdp (attempt 1)
+2026-05-02 06:17:23,504 | INFO |   -> 30 records fetched for trade_percent_gdp
+2026-05-02 06:17:23,507 | INFO | Fetching unemployment_rate (attempt 1)
+2026-05-02 06:17:24,213 | INFO |   -> 30 records fetched for unemployment_rate
+2026-05-02 06:17:24,215 | INFO | Fetching internet_users_percent (attempt 1)
+2026-05-02 06:17:24,692 | INFO |   -> 30 records fetched for internet_users_percent
+2026-05-02 06:17:24,694 | INFO | Fetching oda_received_usd (attempt 1)
+2026-05-02 06:17:25,039 | INFO |   -> 30 records fetched for oda_received_usd
+2026-05-02 06:17:25,040 | INFO | === World Bank extraction complete ===
+2026-05-02 06:17:25,041 | INFO |   Succeeded : 13 indicators
+2026-05-02 06:17:25,041 | INFO |   Failed    : 0 indicators
+2026-05-02 06:17:25,041 | INFO |   Total records: 390
+2026-05-02 06:17:25,041 | INFO | === IMF extraction started ===
+2026-05-02 06:17:25,041 | INFO | Fetching gdp_current_usd (attempt 1)
+2026-05-02 06:17:29,286 | INFO |   -> 52 records fetched for gdp_current_usd
+2026-05-02 06:17:29,288 | INFO | Fetching gdp_growth_rate (attempt 1)
+2026-05-02 06:17:32,473 | INFO |   -> 52 records fetched for gdp_growth_rate
+2026-05-02 06:17:32,475 | INFO | Fetching inflation_rate (attempt 1)
+2026-05-02 06:17:34,499 | INFO |   -> 52 records fetched for inflation_rate
+2026-05-02 06:17:34,501 | INFO | Fetching current_account_usd (attempt 1)
+2026-05-02 06:17:37,706 | INFO |   -> 52 records fetched for current_account_usd
+2026-05-02 06:17:37,708 | INFO | Fetching government_debt_gdp (attempt 1)
+2026-05-02 06:17:39,706 | INFO |   -> 42 records fetched for government_debt_gdp
+2026-05-02 06:17:39,708 | INFO | === IMF extraction complete ===
+2026-05-02 06:17:39,709 | INFO |   Succeeded : 5 indicators
+2026-05-02 06:17:39,709 | INFO |   Failed    : 0 indicators
+2026-05-02 06:17:39,709 | INFO |   Total records: 250
+2026-05-02 06:17:39,809 | INFO | === Load started ===
+2026-05-02 06:17:40,040 | INFO | Database connection successful
+2026-05-02 06:17:40,227 | INFO | Staged 622 records
+2026-05-02 06:17:40,239 | INFO | Rows inserted: 0
+2026-05-02 06:17:40,269 | INFO | Staging table cleaned up
+2026-05-02 06:17:40,269 | INFO | === Load complete ===
+2026-05-02 06:17:40,277 | INFO | CSV exported: exports\gipc_economic_indicators_20260502_061740.csv
+2026-05-02 06:17:40,277 | INFO | Rows: 622 | Columns: ['indicator_name', 'source', 'country', 'year', 'value', 'unit']
+2026-05-02 06:17:40,277 | INFO | Pipeline finished successfully
