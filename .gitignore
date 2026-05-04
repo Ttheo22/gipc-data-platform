@@ -3,6 +3,7 @@ venv/
 
 # Secrets
 .env
+pipeline.log
 
 # Python cache
 __pycache__/
