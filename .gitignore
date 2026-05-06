@@ -16,3 +16,7 @@ Thumbs.db
 
 # Data exports
 exports/
+
+# Manual data uploads
+data/manual_uploads/**/*.csv
+data/manual_uploads/**/*.xlsx
