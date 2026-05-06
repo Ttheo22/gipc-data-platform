@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>GIPC Economic Intelligence Platform</title>
+    <link rel="stylesheet" href="/static/style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <!-- ── Header ── -->
+    <header>
+        <div class="header-inner">
+            <div class="header-left">
+                <img src="/static/gipc_logo.png" alt="GIPC Logo" class="logo"
+                     onerror="this.style.display='none'" />
+                <div>
+                    <h1>Economic Intelligence Platform</h1>
+                    <p class="subtitle">Ghana Investment Promotion Centre</p>
+                </div>
+            </div>
+            <div class="header-right">
+                <span id="last-updated">Loading...</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- ── Main ── -->
+    <main>
+
+        <!-- KPI Cards -->
+        <section class="kpi-section">
+            <div class="kpi-card" id="kpi-gdp">
+                <div class="kpi-label">GDP 2024</div>
+                <div class="kpi-value" id="val-gdp">--</div>
+                <div class="kpi-unit">USD Billions</div>
+            </div>
+            <div class="kpi-card" id="kpi-fdi">
+                <div class="kpi-label">FDI Inflows 2024</div>
+                <div class="kpi-value" id="val-fdi">--</div>
+                <div class="kpi-unit">USD Billions</div>
+            </div>
+            <div class="kpi-card" id="kpi-inflation">
+                <div class="kpi-label">Inflation 2024</div>
+                <div class="kpi-value" id="val-inflation">--</div>
+                <div class="kpi-unit">Percent</div>
+            </div>
+            <div class="kpi-card" id="kpi-fx">
+                <div class="kpi-label">Exchange Rate 2024</div>
+                <div class="kpi-value" id="val-fx">--</div>
+                <div class="kpi-unit">GHS per USD</div>
+            </div>
+            <div class="kpi-card" id="kpi-growth">
+                <div class="kpi-label">GDP Growth 2024</div>
+                <div class="kpi-value" id="val-growth">--</div>
+                <div class="kpi-unit">Percent</div>
+            </div>
+        </section>
+
+        <!-- Charts Row 1 -->
+        <section class="charts-row">
+            <div class="chart-card">
+                <h2>Ghana GDP (USD Billions)</h2>
+                <canvas id="chart-gdp"></canvas>
+            </div>
+            <div class="chart-card">
+                <h2>FDI Net Inflows (USD Billions)</h2>
+                <canvas id="chart-fdi"></canvas>
+            </div>
+        </section>
+
+        <!-- Charts Row 2 -->
+        <section class="charts-row">
+            <div class="chart-card">
+                <h2>Inflation vs GDP Growth (%)</h2>
+                <canvas id="chart-inflation-growth"></canvas>
+            </div>
+            <div class="chart-card">
+                <h2>Exchange Rate (GHS per USD)</h2>
+                <canvas id="chart-fx"></canvas>
+            </div>
+        </section>
+
+        <!-- Domestic Data Table -->
+        <section class="table-section">
+            <div class="table-header">
+                <h2>Domestic Indicators (BoG / GSS / MoF)</h2>
+                <div class="download-buttons">
+                    <a href="/api/export/csv" class="btn-download">
+                        Download International Data CSV
+                    </a>
+                    <a href="/api/export/domestic/csv" class="btn-download btn-secondary">
+                        Download Domestic Data CSV
+                    </a>
+                </div>
+            </div>
+            <div class="table-wrapper">
+                <table id="domestic-table">
+                    <thead>
+                        <tr>
+                            <th>Indicator</th>
+                            <th>Source</th>
+                            <th>Period</th>
+                            <th>Value</th>
+                            <th>Unit</th>
+                        </tr>
+                    </thead>
+                    <tbody id="domestic-tbody">
+                        <tr><td colspan="5">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ── Footer ── -->
+    <footer>
+        <p>Data sources: World Bank · IMF · GSS · Bank of Ghana · Ministry of Finance</p>
+        <p>Ghana Investment Promotion Centre &copy; 2026</p>
+    </footer>
+
+    <script src="/static/charts.js"></script>
+</body>
+</html>
