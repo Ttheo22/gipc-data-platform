@@ -10,6 +10,7 @@ load_dotenv()
 # ── Logging Setup ──────────────────────────────────────────
 logger = logging.getLogger(__name__)
 
+
 # ── Database Connection ────────────────────────────────────
 def get_engine():
     """
@@ -29,7 +30,7 @@ def get_engine():
     return create_engine(url)
 
 
-# ── Load Function ──────────────────────────────────────────
+# ── Load Function (World Bank + IMF) ──────────────────────
 def load(df: pd.DataFrame) -> bool:
     """
     Loads a clean DataFrame into the economic_indicators table.
@@ -101,6 +102,80 @@ def load(df: pd.DataFrame) -> bool:
     return True
 
 
+# ── Domestic Sources Load Function ────────────────────────
+def load_domestic(records: list[dict]) -> bool:
+    """
+    Loads domestic source records (GSS, BoG, MoF) into
+    the domestic_indicators table.
+    """
+    if not records:
+        logger.error("No domestic records to load")
+        return False
+
+    try:
+        engine = get_engine()
+    except ValueError as e:
+        logger.error(f"Configuration error: {e}")
+        return False
+
+    try:
+        df = pd.DataFrame(records)
+
+        # Ensure year is integer
+        df["year"] = pd.to_numeric(df["year"], errors="coerce").astype("Int64")
+
+        # Select only columns that exist in the table
+        columns = [
+            "indicator_name", "source", "country",
+            "year", "period", "quarter", "month",
+            "value", "unit", "notes"
+        ]
+        for col in columns:
+            if col not in df.columns:
+                df[col] = None
+
+        df = df[columns]
+
+        # Stage it
+        df.to_sql(
+            name="domestic_indicators_staging",
+            con=engine,
+            if_exists="replace",
+            index=False,
+            method="multi",
+        )
+        logger.info(f"  Staged {len(df)} domestic records")
+
+        # Upsert
+        upsert_sql = text("""
+            INSERT INTO domestic_indicators
+                (indicator_name, source, country, year, period,
+                 quarter, month, value, unit, notes)
+            SELECT
+                indicator_name, source, country, year, period,
+                quarter, month, value, unit, notes
+            FROM
+                domestic_indicators_staging
+            ON CONFLICT (indicator_name, source, country, period)
+            DO NOTHING;
+        """)
+
+        with engine.begin() as conn:
+            result = conn.execute(upsert_sql)
+            logger.info(f"  Domestic rows inserted: {result.rowcount}")
+
+        # Cleanup
+        with engine.begin() as conn:
+            conn.execute(text("DROP TABLE IF EXISTS domestic_indicators_staging"))
+        logger.info("  Domestic staging table cleaned up")
+
+        return True
+
+    except Exception as e:
+        logger.error(f"Domestic load failed: {e}")
+        return False
+
+
 # ── Export Function ────────────────────────────────────────
 def export_csv(df: pd.DataFrame, output_dir: str = "exports") -> str | None:
     """
@@ -154,18 +229,28 @@ if __name__ == "__main__":
     import sys
     sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-    from extractors.world_bank  import run as wb_run
-    from extractors.imf         import run as imf_run
-    from transformers.normalize import run as transform_run
+    from extractors.world_bank       import run as wb_run
+    from extractors.imf              import run as imf_run
+    from extractors.domestic_sources import run as domestic_run
+    from transformers.normalize      import run as transform_run
 
     logger.info("Pipeline started")
 
-    wb_data  = wb_run()
-    imf_data = imf_run()
+    wb_data       = wb_run()
+    imf_data      = imf_run()
+    domestic_data = domestic_run()
 
     df = transform_run(wb_data, imf_data)
 
     success = run(df)
+
+    # Load domestic sources into separate table
+    logger.info("=== Loading domestic sources ===")
+    domestic_success = load_domestic(domestic_data)
+    if domestic_success:
+        logger.info("Domestic sources loaded successfully")
+    else:
+        logger.warning("Domestic sources load failed — check pipeline.log")
 
     if success:
         export_csv(df)
