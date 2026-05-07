@@ -2,6 +2,16 @@ const GIPC_GREEN = '#006633';
 const GIPC_GOLD  = '#FCD116';
 const API        = '';
 
+// ── Chart Instance Registry ────────────────────────────────
+const chartInstances = {};
+
+function destroyChart(id) {
+    if (chartInstances[id]) {
+        chartInstances[id].destroy();
+        delete chartInstances[id];
+    }
+}
+
 // ── Helpers ───────────────────────────────────────────────
 async function fetchJSON(url) {
     try {
@@ -17,11 +27,21 @@ async function fetchJSON(url) {
     }
 }
 
+function showError(canvasId, message) {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) return;
+    const div = document.createElement('div');
+    div.style.cssText = 'text-align:center;padding:2rem;color:#999;font-size:0.9rem;';
+    div.textContent = message;
+    canvas.replaceWith(div);
+}
+
 function makeLineChart(canvasId, labels, datasets) {
+    destroyChart(canvasId);
     const canvas = document.getElementById(canvasId);
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
-    return new Chart(ctx, {
+    chartInstances[canvasId] = new Chart(ctx, {
         type: 'line',
         data: { labels, datasets },
         options: {
@@ -36,10 +56,11 @@ function makeLineChart(canvasId, labels, datasets) {
 }
 
 function makeBarChart(canvasId, labels, data, label) {
+    destroyChart(canvasId);
     const canvas = document.getElementById(canvasId);
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
-    return new Chart(ctx, {
+    chartInstances[canvasId] = new Chart(ctx, {
         type: 'bar',
         data: {
             labels,
@@ -60,16 +81,6 @@ function makeBarChart(canvasId, labels, data, label) {
             }
         }
     });
-}
-
-function showError(canvasId, message) {
-    const canvas = document.getElementById(canvasId);
-    if (!canvas) return;
-    const parent = canvas.parentElement;
-    const div = document.createElement('div');
-    div.style.cssText = 'text-align:center;padding:2rem;color:#999;font-size:0.9rem;';
-    div.textContent = message;
-    canvas.replaceWith(div);
 }
 
 // ── KPI Cards ─────────────────────────────────────────────
@@ -93,9 +104,9 @@ async function loadKPIs() {
 
     set('val-gdp',       'gdp_current_usd');
     set('val-fdi',       'fdi_net_inflows_usd');
-    set('val-inflation', 'inflation_cpi',    1);
+    set('val-inflation', 'inflation_cpi',     1);
     set('val-fx',        'exchange_rate_usd', 2);
-    set('val-growth',    'gdp_growth_rate',  1);
+    set('val-growth',    'gdp_growth_rate',   1);
 }
 
 // ── GDP Chart ─────────────────────────────────────────────
@@ -105,12 +116,9 @@ async function loadGDPChart() {
     );
     if (!data || !data.length) { showError('chart-gdp', 'No GDP data available'); return; }
 
-    const labels = data.map(d => d.year);
-    const values = data.map(d => parseFloat(d.value));
-
-    makeLineChart('chart-gdp', labels, [{
+    makeLineChart('chart-gdp', data.map(d => d.year), [{
         label: 'GDP (USD Billions)',
-        data: values,
+        data: data.map(d => parseFloat(d.value)),
         borderColor: GIPC_GREEN,
         backgroundColor: 'rgba(0,102,51,0.08)',
         tension: 0.3,
@@ -126,10 +134,7 @@ async function loadFDIChart() {
     );
     if (!data || !data.length) { showError('chart-fdi', 'No FDI data available'); return; }
 
-    const labels = data.map(d => d.year);
-    const values = data.map(d => parseFloat(d.value));
-
-    makeBarChart('chart-fdi', labels, values, 'FDI Net Inflows (USD Billions)');
+    makeBarChart('chart-fdi', data.map(d => d.year), data.map(d => parseFloat(d.value)), 'FDI Net Inflows (USD Billions)');
 }
 
 // ── Inflation vs Growth Chart ──────────────────────────────
@@ -144,7 +149,6 @@ async function loadInflationGrowthChart() {
         return;
     }
 
-    const labels = inflation.map(d => d.year);
     const datasets = [{
         label: 'Inflation CPI (%)',
         data: inflation.map(d => parseFloat(d.value)),
@@ -167,7 +171,7 @@ async function loadInflationGrowthChart() {
         });
     }
 
-    makeLineChart('chart-inflation-growth', labels, datasets);
+    makeLineChart('chart-inflation-growth', inflation.map(d => d.year), datasets);
 }
 
 // ── Exchange Rate Chart ────────────────────────────────────
@@ -177,12 +181,9 @@ async function loadFXChart() {
     );
     if (!data || !data.length) { showError('chart-fx', 'No exchange rate data available'); return; }
 
-    const labels = data.map(d => d.year);
-    const values = data.map(d => parseFloat(d.value));
-
-    makeLineChart('chart-fx', labels, [{
+    makeLineChart('chart-fx', data.map(d => d.year), [{
         label: 'GHS per USD',
-        data: values,
+        data: data.map(d => parseFloat(d.value)),
         borderColor: GIPC_GOLD,
         backgroundColor: 'rgba(252,209,22,0.1)',
         tension: 0.3,
@@ -193,7 +194,7 @@ async function loadFXChart() {
 
 // ── Domestic Table ─────────────────────────────────────────
 async function loadDomesticTable() {
-    const data = await fetchJSON(`${API}/api/domestic`);
+    const data  = await fetchJSON(`${API}/api/domestic`);
     const tbody = document.getElementById('domestic-tbody');
     if (!tbody) return;
 
@@ -205,7 +206,7 @@ async function loadDomesticTable() {
     tbody.innerHTML = data.map(row => `
         <tr>
             <td>${row.indicator_name.replace(/_/g, ' ')}</td>
-            <td><span class="source-badge source-${row.source.toLowerCase()}">${row.source}</span></td>
+            <td>${row.source}</td>
             <td>${row.period || row.year}</td>
             <td><strong>${parseFloat(row.value).toFixed(2)}</strong></td>
             <td>${row.unit}</td>
@@ -216,7 +217,7 @@ async function loadDomesticTable() {
 // ── Last Updated ──────────────────────────────────────────
 async function loadLastUpdated() {
     const data = await fetchJSON(`${API}/api/last-updated`);
-    const el = document.getElementById('last-updated');
+    const el   = document.getElementById('last-updated');
     if (!el) return;
     if (data && data.last_updated) {
         const date = new Date(data.last_updated).toLocaleDateString('en-GB', {
@@ -228,7 +229,7 @@ async function loadLastUpdated() {
     }
 }
 
-// ── Init — each section loads independently ───────────────
+// ── Init ──────────────────────────────────────────────────
 async function init() {
     await Promise.allSettled([
         loadKPIs(),
@@ -241,4 +242,67 @@ async function init() {
     ]);
 }
 
-document.addEventListener('DOMContentLoaded', init);
+// ── Morning Refresh Scheduler ─────────────────────────────
+function scheduleMorningRefresh() {
+    const now    = new Date();
+    const target = new Date();
+    target.setHours(8, 0, 0, 0);
+
+    if (now >= target) {
+        target.setDate(target.getDate() + 1);
+    }
+
+    const msUntil8am = target - now;
+    console.log(`Next data refresh scheduled in ${Math.round(msUntil8am / 60000)} minutes`);
+
+    setTimeout(async () => {
+        console.log('Morning refresh triggered at', new Date().toLocaleTimeString());
+        await init();
+        scheduleMorningRefresh();
+    }, msUntil8am);
+}
+
+// ── Manual Refresh Button ─────────────────────────────────
+function addRefreshButton() {
+    const header = document.querySelector('.header-right');
+    if (!header) return;
+
+    const btn = document.createElement('button');
+    btn.textContent   = 'Refresh Data';
+    btn.style.cssText = `
+        background: transparent;
+        border: 1px solid #FCD116;
+        color: #FCD116;
+        padding: 6px 14px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.8rem;
+        margin-left: 16px;
+        transition: all 0.2s;
+    `;
+
+    btn.addEventListener('mouseenter', () => {
+        btn.style.background = '#FCD116';
+        btn.style.color      = '#004d26';
+    });
+    btn.addEventListener('mouseleave', () => {
+        btn.style.background = 'transparent';
+        btn.style.color      = '#FCD116';
+    });
+    btn.addEventListener('click', async () => {
+        btn.textContent = 'Refreshing...';
+        btn.disabled    = true;
+        await init();
+        btn.textContent = 'Refresh Data';
+        btn.disabled    = false;
+    });
+
+    header.appendChild(btn);
+}
+
+// ── Boot ──────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+    init();
+    scheduleMorningRefresh();
+    addRefreshButton();
+});
