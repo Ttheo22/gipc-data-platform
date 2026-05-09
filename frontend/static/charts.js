@@ -111,29 +111,47 @@ function populateYearDropdowns() {
 }
 
 // ── KPI Cards ─────────────────────────────────────────────
+// ── KPI Cards ─────────────────────────────────────────────
 async function loadKPIs() {
+    const { from, to } = getYearRange();
     const data = await fetchJSON(`${API}/api/kpis`);
     if (!data) return;
 
+    // Build a map of all values per indicator
     const map = {};
     data.forEach(d => { map[d.indicator_name] = d; });
 
-    const set = (id, key, decimals = 2) => {
-        const el = document.getElementById(id);
+    // Fetch latest value within the selected year range for each KPI
+    const indicators = [
+        { id: 'val-gdp',       key: 'gdp_current_usd',     label: 'GDP',           decimals: 2 },
+        { id: 'val-fdi',       key: 'fdi_net_inflows_usd', label: 'FDI Inflows',   decimals: 2 },
+        { id: 'val-inflation', key: 'inflation_cpi',        label: 'Inflation',     decimals: 1 },
+        { id: 'val-fx',        key: 'exchange_rate_usd',    label: 'Exchange Rate', decimals: 2 },
+        { id: 'val-growth',    key: 'gdp_growth_rate',      label: 'GDP Growth',    decimals: 1 },
+    ];
+
+    await Promise.all(indicators.map(async ({ id, key, label, decimals }) => {
+        const el        = document.getElementById(id);
+        const labelEl   = el?.closest('.kpi-card')?.querySelector('.kpi-label');
+
         if (!el) return;
-        if (map[key] && map[key].value != null) {
-            el.textContent = parseFloat(map[key].value).toFixed(decimals);
+
+        const result = await fetchJSON(
+            `${API}/api/data?indicator=${key}&source=world_bank&year_from=${from}&year_to=${to}`
+        );
+
+        // Get the latest non-null value within range
+        const valid = result?.filter(d => d.value != null) || [];
+        const latest = valid[valid.length - 1];
+
+        if (latest) {
+            el.textContent = parseFloat(latest.value).toFixed(decimals);
+            if (labelEl) labelEl.textContent = `${label} ${latest.year}`;
         } else {
             el.textContent = 'N/A';
-            console.warn(`KPI missing: ${key}`);
+            if (labelEl) labelEl.textContent = `${label} —`;
         }
-    };
-
-    set('val-gdp',       'gdp_current_usd');
-    set('val-fdi',       'fdi_net_inflows_usd');
-    set('val-inflation', 'inflation_cpi',     1);
-    set('val-fx',        'exchange_rate_usd', 2);
-    set('val-growth',    'gdp_growth_rate',   1);
+    }));
 }
 
 // ── GDP Chart ─────────────────────────────────────────────
@@ -263,6 +281,7 @@ async function loadLastUpdated() {
 // ── Reload Charts Only (for filter) ───────────────────────
 async function reloadCharts() {
     await Promise.allSettled([
+        loadKPIs(),
         loadGDPChart(),
         loadFDIChart(),
         loadInflationGrowthChart(),
