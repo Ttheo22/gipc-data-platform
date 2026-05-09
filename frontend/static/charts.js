@@ -1,6 +1,8 @@
-const GIPC_GREEN = '#006633';
-const GIPC_GOLD  = '#FCD116';
-const API        = '';
+const GIPC_GREEN   = '#006633';
+const GIPC_GOLD    = '#FCD116';
+const API          = '';
+const DEFAULT_FROM = 1995;
+const DEFAULT_TO   = 2024;
 
 // ── Chart Instance Registry ────────────────────────────────
 const chartInstances = {};
@@ -83,6 +85,31 @@ function makeBarChart(canvasId, labels, data, label) {
     });
 }
 
+// ── Year Filter ───────────────────────────────────────────
+function getYearRange() {
+    const from = parseInt(document.getElementById('year-from')?.value) || DEFAULT_FROM;
+    const to   = parseInt(document.getElementById('year-to')?.value)   || DEFAULT_TO;
+    return { from, to };
+}
+
+function populateYearDropdowns() {
+    const fromSelect = document.getElementById('year-from');
+    const toSelect   = document.getElementById('year-to');
+    if (!fromSelect || !toSelect) return;
+
+    for (let y = 1980; y <= 2031; y++) {
+        const o1 = document.createElement('option');
+        o1.value = y; o1.textContent = y;
+        if (y === DEFAULT_FROM) o1.selected = true;
+        fromSelect.appendChild(o1);
+
+        const o2 = document.createElement('option');
+        o2.value = y; o2.textContent = y;
+        if (y === DEFAULT_TO) o2.selected = true;
+        toSelect.appendChild(o2);
+    }
+}
+
 // ── KPI Cards ─────────────────────────────────────────────
 async function loadKPIs() {
     const data = await fetchJSON(`${API}/api/kpis`);
@@ -111,8 +138,9 @@ async function loadKPIs() {
 
 // ── GDP Chart ─────────────────────────────────────────────
 async function loadGDPChart() {
+    const { from, to } = getYearRange();
     const data = await fetchJSON(
-        `${API}/api/data?indicator=gdp_current_usd&source=world_bank&year_from=1995&year_to=2024`
+        `${API}/api/data?indicator=gdp_current_usd&source=world_bank&year_from=${from}&year_to=${to}`
     );
     if (!data || !data.length) { showError('chart-gdp', 'No GDP data available'); return; }
 
@@ -129,8 +157,9 @@ async function loadGDPChart() {
 
 // ── FDI Chart ─────────────────────────────────────────────
 async function loadFDIChart() {
+    const { from, to } = getYearRange();
     const data = await fetchJSON(
-        `${API}/api/data?indicator=fdi_net_inflows_usd&source=world_bank&year_from=2000&year_to=2024`
+        `${API}/api/data?indicator=fdi_net_inflows_usd&source=world_bank&year_from=${from}&year_to=${to}`
     );
     if (!data || !data.length) { showError('chart-fdi', 'No FDI data available'); return; }
 
@@ -139,9 +168,10 @@ async function loadFDIChart() {
 
 // ── Inflation vs Growth Chart ──────────────────────────────
 async function loadInflationGrowthChart() {
+    const { from, to } = getYearRange();
     const [inflation, growth] = await Promise.all([
-        fetchJSON(`${API}/api/data?indicator=inflation_cpi&source=world_bank&year_from=1995&year_to=2024`),
-        fetchJSON(`${API}/api/data?indicator=gdp_growth_rate&source=world_bank&year_from=1995&year_to=2024`)
+        fetchJSON(`${API}/api/data?indicator=inflation_cpi&source=world_bank&year_from=${from}&year_to=${to}`),
+        fetchJSON(`${API}/api/data?indicator=gdp_growth_rate&source=world_bank&year_from=${from}&year_to=${to}`)
     ]);
 
     if (!inflation || !inflation.length) {
@@ -176,8 +206,9 @@ async function loadInflationGrowthChart() {
 
 // ── Exchange Rate Chart ────────────────────────────────────
 async function loadFXChart() {
+    const { from, to } = getYearRange();
     const data = await fetchJSON(
-        `${API}/api/data?indicator=exchange_rate_usd&source=world_bank&year_from=2000&year_to=2024`
+        `${API}/api/data?indicator=exchange_rate_usd&source=world_bank&year_from=${from}&year_to=${to}`
     );
     if (!data || !data.length) { showError('chart-fx', 'No exchange rate data available'); return; }
 
@@ -206,7 +237,7 @@ async function loadDomesticTable() {
     tbody.innerHTML = data.map(row => `
         <tr>
             <td>${row.indicator_name.replace(/_/g, ' ')}</td>
-            <td>${row.source}</td>
+            <td><span class="source-badge source-${row.source.toLowerCase()}">${row.source}</span></td>
             <td>${row.period || row.year}</td>
             <td><strong>${parseFloat(row.value).toFixed(2)}</strong></td>
             <td>${row.unit}</td>
@@ -229,6 +260,16 @@ async function loadLastUpdated() {
     }
 }
 
+// ── Reload Charts Only (for filter) ───────────────────────
+async function reloadCharts() {
+    await Promise.allSettled([
+        loadGDPChart(),
+        loadFDIChart(),
+        loadInflationGrowthChart(),
+        loadFXChart(),
+    ]);
+}
+
 // ── Init ──────────────────────────────────────────────────
 async function init() {
     await Promise.allSettled([
@@ -247,16 +288,11 @@ function scheduleMorningRefresh() {
     const now    = new Date();
     const target = new Date();
     target.setHours(8, 0, 0, 0);
-
-    if (now >= target) {
-        target.setDate(target.getDate() + 1);
-    }
-
+    if (now >= target) target.setDate(target.getDate() + 1);
     const msUntil8am = target - now;
-    console.log(`Next data refresh scheduled in ${Math.round(msUntil8am / 60000)} minutes`);
-
+    console.log(`Next data refresh in ${Math.round(msUntil8am / 60000)} minutes`);
     setTimeout(async () => {
-        console.log('Morning refresh triggered at', new Date().toLocaleTimeString());
+        console.log('Morning refresh at', new Date().toLocaleTimeString());
         await init();
         scheduleMorningRefresh();
     }, msUntil8am);
@@ -266,7 +302,6 @@ function scheduleMorningRefresh() {
 function addRefreshButton() {
     const header = document.querySelector('.header-right');
     if (!header) return;
-
     const btn = document.createElement('button');
     btn.textContent   = 'Refresh Data';
     btn.style.cssText = `
@@ -280,15 +315,8 @@ function addRefreshButton() {
         margin-left: 16px;
         transition: all 0.2s;
     `;
-
-    btn.addEventListener('mouseenter', () => {
-        btn.style.background = '#FCD116';
-        btn.style.color      = '#004d26';
-    });
-    btn.addEventListener('mouseleave', () => {
-        btn.style.background = 'transparent';
-        btn.style.color      = '#FCD116';
-    });
+    btn.addEventListener('mouseenter', () => { btn.style.background = '#FCD116'; btn.style.color = '#004d26'; });
+    btn.addEventListener('mouseleave', () => { btn.style.background = 'transparent'; btn.style.color = '#FCD116'; });
     btn.addEventListener('click', async () => {
         btn.textContent = 'Refreshing...';
         btn.disabled    = true;
@@ -296,12 +324,26 @@ function addRefreshButton() {
         btn.textContent = 'Refresh Data';
         btn.disabled    = false;
     });
-
     header.appendChild(btn);
 }
 
 // ── Boot ──────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
+    populateYearDropdowns();
+
+    document.getElementById('apply-filter')?.addEventListener('click', () => {
+        const from = parseInt(document.getElementById('year-from').value);
+        const to   = parseInt(document.getElementById('year-to').value);
+        if (from > to) { alert('Start year cannot be greater than end year.'); return; }
+        reloadCharts();
+    });
+
+    document.getElementById('reset-filter')?.addEventListener('click', () => {
+        document.getElementById('year-from').value = DEFAULT_FROM;
+        document.getElementById('year-to').value   = DEFAULT_TO;
+        reloadCharts();
+    });
+
     init();
     scheduleMorningRefresh();
     addRefreshButton();
