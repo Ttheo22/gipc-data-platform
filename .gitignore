@@ -21,13 +21,12 @@ data/manual_uploads/**/*.csv
 data/manual_uploads/**/*.xlsx
 .env.aws
 
+
 # Terraform
 .terraform/
-.terraform.lock.hcl
 terraform.tfstate
 terraform.tfstate.backup
 infrastructure/.terraform/
-infrastructure/.terraform.lock.hcl
 infrastructure/terraform.tfstate
 infrastructure/terraform.tfstate.backup
 infrastructure/terraform.tfvars
