@@ -1,0 +1,113 @@
+INIT_START Runtime Version: python:3.12.mainlinev2.v11	Runtime Version ARN: arn:aws:lambda:eu-west-1::runtime:0eb6fb00a97c1a17d2e3014b04c79bfc9bea4301466439e3458f985dc75cadcc
+	START RequestId: 4672d399-eda7-4f3d-8c19-bb74bfce750d Version: $LATEST
+	[INFO]	2026-06-28T22:13:49.098Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	GIPC Pipeline Lambda started
+	[INFO]	2026-06-28T22:13:49.098Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	Event: {}
+	[INFO]	2026-06-28T22:14:00.235Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	Starting extraction...
+	[INFO]	2026-06-28T22:14:00.235Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	=== World Bank extraction started ===
+	[INFO]	2026-06-28T22:14:00.235Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	Fetching gdp_current_usd (attempt 1)
+	[INFO]	2026-06-28T22:14:00.414Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	  -> 35 records fetched for gdp_current_usd
+	[INFO]	2026-06-28T22:14:00.415Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	Fetching gdp_growth_rate (attempt 1)
+	[INFO]	2026-06-28T22:14:00.534Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	  -> 35 records fetched for gdp_growth_rate
+	[INFO]	2026-06-28T22:14:00.535Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	Fetching inflation_cpi (attempt 1)
+	[INFO]	2026-06-28T22:14:00.669Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	  -> 35 records fetched for inflation_cpi
+	[INFO]	2026-06-28T22:14:00.671Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	Fetching population (attempt 1)
+	[INFO]	2026-06-28T22:14:00.797Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	  -> 35 records fetched for population
+	[INFO]	2026-06-28T22:14:00.799Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	Fetching gni_per_capita (attempt 1)
+	[INFO]	2026-06-28T22:14:00.903Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	  -> 35 records fetched for gni_per_capita
+	[INFO]	2026-06-28T22:14:00.905Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	Fetching government_debt_percent_gdp (attempt 1)
+	[INFO]	2026-06-28T22:14:01.067Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	  -> 35 records fetched for government_debt_percent_gdp
+	[INFO]	2026-06-28T22:14:01.069Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	Fetching external_debt_stocks_usd (attempt 1)
+	[INFO]	2026-06-28T22:14:01.181Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	  -> 35 records fetched for external_debt_stocks_usd
+	[INFO]	2026-06-28T22:14:01.182Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	Fetching fiscal_deficit_percent_gdp (attempt 1)
+	[INFO]	2026-06-28T22:14:01.312Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	  -> 35 records fetched for fiscal_deficit_percent_gdp
+	[INFO]	2026-06-28T22:14:01.313Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	Fetching tax_revenue_percent_gdp (attempt 1)
+	[INFO]	2026-06-28T22:14:01.440Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	  -> 35 records fetched for tax_revenue_percent_gdp
+	[INFO]	2026-06-28T22:14:01.442Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	Fetching fdi_net_inflows_usd (attempt 1)
+	[INFO]	2026-06-28T22:14:01.552Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	  -> 35 records fetched for fdi_net_inflows_usd
+	[INFO]	2026-06-28T22:14:01.553Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	Fetching fdi_net_outflows_usd (attempt 1)
+	[INFO]	2026-06-28T22:14:01.655Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	  -> 35 records fetched for fdi_net_outflows_usd
+	[INFO]	2026-06-28T22:14:01.657Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	Fetching exports_usd (attempt 1)
+	[INFO]	2026-06-28T22:14:01.788Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	  -> 35 records fetched for exports_usd
+	[INFO]	2026-06-28T22:14:01.790Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	Fetching imports_usd (attempt 1)
+	[INFO]	2026-06-28T22:14:01.886Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	  -> 35 records fetched for imports_usd
+	[INFO]	2026-06-28T22:14:01.888Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	Fetching trade_percent_gdp (attempt 1)
+	[INFO]	2026-06-28T22:14:01.991Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	  -> 35 records fetched for trade_percent_gdp
+	[INFO]	2026-06-28T22:14:01.993Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	Fetching remittances_received_usd (attempt 1)
+	[INFO]	2026-06-28T22:14:02.136Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	  -> 35 records fetched for remittances_received_usd
+	[INFO]	2026-06-28T22:14:02.138Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	Fetching real_interest_rate (attempt 1)
+	[INFO]	2026-06-28T22:14:02.285Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	  -> 35 records fetched for real_interest_rate
+	[INFO]	2026-06-28T22:14:02.286Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	Fetching exchange_rate_usd (attempt 1)
+	[INFO]	2026-06-28T22:14:02.410Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	  -> 35 records fetched for exchange_rate_usd
+	[INFO]	2026-06-28T22:14:02.412Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	Fetching credit_private_sector_gdp (attempt 1)
+	[INFO]	2026-06-28T22:14:02.544Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	  -> 35 records fetched for credit_private_sector_gdp
+	[INFO]	2026-06-28T22:14:02.545Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	Fetching unemployment_rate (attempt 1)
+	[INFO]	2026-06-28T22:14:02.661Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	  -> 35 records fetched for unemployment_rate
+	[INFO]	2026-06-28T22:14:02.662Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	Fetching youth_unemployment_rate (attempt 1)
+	[INFO]	2026-06-28T22:14:02.765Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	  -> 35 records fetched for youth_unemployment_rate
+	[INFO]	2026-06-28T22:14:02.767Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	Fetching labour_force_total (attempt 1)
+	[INFO]	2026-06-28T22:14:02.878Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	  -> 35 records fetched for labour_force_total
+	[INFO]	2026-06-28T22:14:02.879Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	Fetching agriculture_value_added_gdp (attempt 1)
+	[INFO]	2026-06-28T22:14:02.991Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	  -> 35 records fetched for agriculture_value_added_gdp
+	[INFO]	2026-06-28T22:14:02.992Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	Fetching manufacturing_value_added_gdp (attempt 1)
+	[INFO]	2026-06-28T22:14:03.125Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	  -> 35 records fetched for manufacturing_value_added_gdp
+	[INFO]	2026-06-28T22:14:03.127Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	Fetching internet_users_percent (attempt 1)
+	[INFO]	2026-06-28T22:14:03.243Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	  -> 35 records fetched for internet_users_percent
+	[INFO]	2026-06-28T22:14:03.244Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	Fetching electricity_access_percent (attempt 1)
+	[INFO]	2026-06-28T22:14:03.364Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	  -> 35 records fetched for electricity_access_percent
+	[INFO]	2026-06-28T22:14:03.365Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	Fetching mobile_subscriptions_per_100 (attempt 1)
+	[INFO]	2026-06-28T22:14:03.466Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	  -> 35 records fetched for mobile_subscriptions_per_100
+	[INFO]	2026-06-28T22:14:03.467Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	Fetching oda_received_usd (attempt 1)
+	[INFO]	2026-06-28T22:14:03.556Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	  -> 35 records fetched for oda_received_usd
+	[INFO]	2026-06-28T22:14:03.557Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	=== World Bank extraction complete ===
+	[INFO]	2026-06-28T22:14:03.558Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	  Succeeded : 27 indicators
+	[INFO]	2026-06-28T22:14:03.558Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	  Failed    : 0 indicators
+	[INFO]	2026-06-28T22:14:03.558Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	  Total records: 945
+	[INFO]	2026-06-28T22:14:03.558Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	=== IMF extraction started ===
+	[INFO]	2026-06-28T22:14:03.558Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	Fetching gdp_current_usd (attempt 1)
+	[INFO]	2026-06-28T22:14:07.118Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	  -> 52 records fetched for gdp_current_usd
+	[INFO]	2026-06-28T22:14:07.120Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	Fetching gdp_growth_rate (attempt 1)
+	[INFO]	2026-06-28T22:14:10.616Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	  -> 52 records fetched for gdp_growth_rate
+	[INFO]	2026-06-28T22:14:10.618Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	Fetching inflation_rate (attempt 1)
+	[INFO]	2026-06-28T22:14:13.080Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	  -> 52 records fetched for inflation_rate
+	[INFO]	2026-06-28T22:14:13.082Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	Fetching current_account_usd (attempt 1)
+	[INFO]	2026-06-28T22:14:18.383Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	  -> 52 records fetched for current_account_usd
+	[INFO]	2026-06-28T22:14:18.385Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	Fetching government_debt_gdp (attempt 1)
+	[INFO]	2026-06-28T22:14:21.389Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	  -> 42 records fetched for government_debt_gdp
+	[INFO]	2026-06-28T22:14:21.391Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	=== IMF extraction complete ===
+	[INFO]	2026-06-28T22:14:21.391Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	  Succeeded : 5 indicators
+	[INFO]	2026-06-28T22:14:21.391Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	  Failed    : 0 indicators
+	[INFO]	2026-06-28T22:14:21.391Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	  Total records: 250
+	[INFO]	2026-06-28T22:14:21.391Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	=== Domestic sources extraction started ===
+	[WARNING]	2026-06-28T22:14:21.392Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	No CSV files found in data/manual_uploads/gss ΓÇö skipping GSS
+	[WARNING]	2026-06-28T22:14:21.392Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	No CSV files found in data/manual_uploads/bog ΓÇö skipping BoG
+	[WARNING]	2026-06-28T22:14:21.392Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	No CSV files found in data/manual_uploads/mof ΓÇö skipping MoF
+	[INFO]	2026-06-28T22:14:21.392Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	=== Domestic sources extraction complete ===
+	[INFO]	2026-06-28T22:14:21.392Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	  Succeeded : []
+	[INFO]	2026-06-28T22:14:21.392Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	  Failed    : ['GSS', 'BoG', 'MoF']
+	[INFO]	2026-06-28T22:14:21.392Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	  Total records: 0
+	[INFO]	2026-06-28T22:14:21.392Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	Starting transformation...
+	ΓöÇΓöÇ Tagging sources ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+	Total raw records : 1195
+	ΓöÇΓöÇ Cleaning & normalising ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+	Records processed : 1195
+	Records dropped   : 125  (nulls or unknown indicators)
+	Records kept      : 1070
+	Trade balance calculated: 34 records added
+	ΓöÇΓöÇ Final dataset ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+	Shape             : (1104, 6)
+	Indicators        : 31
+	Year range        : 1980 ΓÇô 2031
+	Sources           : ['world_bank', 'imf', 'calculated']
+	[INFO]	2026-06-28T22:14:21.536Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	Loading to RDS...
+	[ERROR]	2026-06-28T22:14:21.537Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	No domestic records to load
+	[INFO]	2026-06-28T22:14:21.537Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	=== Load started ===
+	[ERROR]	2026-06-28T22:14:37.640Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	Cannot connect to database: (psycopg2.OperationalError) connection to server at "gipc-data-platform-db.c76ma8qkg7nj.eu-west-1.rds.amazonaws.com" (63.33.136.58), port 5432 failed: Connection timed out
+	Is the server running on that host and accepting TCP/IP connections?
+
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+	[ERROR]	2026-06-28T22:14:37.641Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	Check that PostgreSQL is running and your .env credentials are correct
+	[ERROR]	2026-06-28T22:14:37.641Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	=== Load failed ===
+	[INFO]	2026-06-28T22:14:37.641Z	4672d399-eda7-4f3d-8c19-bb74bfce750d	Pipeline completed successfully
+	END RequestId: 4672d399-eda7-4f3d-8c19-bb74bfce750d
+	REPORT RequestId: 4672d399-eda7-4f3d-8c19-bb74bfce750d	Duration: 48545.06 ms	Billed Duration: 48632 ms	Memory Size: 512 MB	Max Memory Used: 175 MB	Init Duration: 86.01 ms	
+

@@ -2,11 +2,15 @@ import requests
 import logging
 
 # ── Logging Setup ──────────────────────────────────────────
+import os
+
+log_path = "/tmp/pipeline.log" if os.environ.get("AWS_LAMBDA_FUNCTION_NAME") else "pipeline.log"
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s | %(levelname)s | %(message)s",
     handlers=[
-        logging.FileHandler("pipeline.log", encoding="utf-8"),
+        logging.FileHandler(log_path, encoding="utf-8"),
         logging.StreamHandler()
     ]
 )

@@ -1,8 +1,30 @@
 import requests
 import logging
 
+import os
+log_path = "/tmp/pipeline.log" if os.environ.get("AWS_LAMBDA_FUNCTION_NAME") else "pipeline.log"
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s | %(levelname)s | %(message)s",
+    handlers=[
+        logging.FileHandler(log_path, encoding="utf-8"),
+        logging.StreamHandler()
+    ]
+)
+
 # ── Logging Setup ──────────────────────────────────────────
 logger = logging.getLogger(__name__)
+
+# ── Lambda-aware log path ──────────────────────────────────
+_log_path = "/tmp/pipeline.log" if os.environ.get("AWS_LAMBDA_FUNCTION_NAME") else "pipeline.log"
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s | %(levelname)s | %(message)s",
+    handlers=[
+        logging.FileHandler(_log_path, encoding="utf-8"),
+        logging.StreamHandler()
+    ]
+)
 
 # ── Configuration ──────────────────────────────────────────
 COUNTRY_CODE = "GHA"
@@ -106,11 +128,13 @@ def run() -> list[dict]:
 
 # ── Entry Point ────────────────────────────────────────────
 if __name__ == "__main__":
+    import os
+    log_path = "/tmp/pipeline.log" if os.environ.get("AWS_LAMBDA_FUNCTION_NAME") else "pipeline.log"
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s | %(levelname)s | %(message)s",
         handlers=[
-            logging.FileHandler("pipeline.log"),
+            logging.FileHandler(log_path, encoding="utf-8"),
             logging.StreamHandler()
         ]
     )

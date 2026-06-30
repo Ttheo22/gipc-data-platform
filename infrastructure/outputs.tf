@@ -17,3 +17,23 @@ output "security_group_id" {
   description = "RDS security group ID"
   value       = aws_security_group.rds.id
 }
+
+output "lambda_function_name" {
+  description = "Lambda function name"
+  value       = aws_lambda_function.pipeline.function_name
+}
+
+output "eventbridge_rule" {
+  description = "EventBridge schedule rule"
+  value       = aws_cloudwatch_event_rule.monthly_pipeline.schedule_expression
+}
+
+output "vpc_id" {
+  description = "VPC ID"
+  value       = aws_vpc.main.id
+}
+
+output "nat_gateway_ip" {
+  description = "NAT Gateway public IP"
+  value       = aws_eip.nat.public_ip
+}
