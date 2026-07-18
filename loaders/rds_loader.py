@@ -5,6 +5,7 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.exc import OperationalError, SQLAlchemyError
 from dotenv import load_dotenv
 
+
 load_dotenv()
 
 # ── Logging Setup ──────────────────────────────────────────
@@ -23,19 +24,32 @@ logging.basicConfig(
 
 
 # ── Database Connection ────────────────────────────────────
+
 def get_engine():
     """
-    Creates a SQLAlchemy engine from environment variables.
-    Raises a clear error if credentials are missing.
+    Creates a SQLAlchemy engine. Uses Secrets Manager when running in Lambda,
+    falls back to .env for local development.
     """
-    db_host = os.getenv("DB_HOST",     "localhost")
-    db_port = os.getenv("DB_PORT",     "5432")
-    db_name = os.getenv("DB_NAME",     "gipc_platform")
-    db_user = os.getenv("DB_USER",     "postgres")
-    db_pass = os.getenv("DB_PASSWORD", "")
+    if os.environ.get("AWS_LAMBDA_FUNCTION_NAME"):
+        import json
+        import boto3
 
-    if not db_pass:
-        raise ValueError("DB_PASSWORD is not set in your .env file")
+        client = boto3.client("secretsmanager", region_name="eu-west-2")
+        response = client.get_secret_value(SecretId="gipc/platform-db-credentials")
+        secret = json.loads(response["SecretString"])
+        db_host = secret["host"]
+        db_port = secret["port"]
+        db_name = secret["dbname"]
+        db_user = secret["username"]
+        db_pass = secret["password"]
+    else:
+        db_host = os.getenv("DB_HOST", "localhost")
+        db_port = os.getenv("DB_PORT", "5432")
+        db_name = os.getenv("DB_NAME", "gipc_platform")
+        db_user = os.getenv("DB_USER", "postgres")
+        db_pass = os.getenv("DB_PASSWORD", "")
+        if not db_pass:
+            raise ValueError("DB_PASSWORD is not set in your .env file")
 
     url = f"postgresql+psycopg2://{db_user}:{db_pass}@{db_host}:{db_port}/{db_name}"
     return create_engine(url)
@@ -236,8 +250,8 @@ def load_domestic(records: list[dict]) -> bool:
 # ── Export Function ────────────────────────────────────────
 def export_csv(df: pd.DataFrame, output_dir: str = "exports") -> str | None:
     """
-    Exports the clean DataFrame to a timestamped CSV file.
-    Returns the filepath on success, None on failure.
+    Exports the DataFrame to CSV. Uploads to S3 when running in Lambda,
+    writes to local disk otherwise.
     """
     from datetime import datetime
 
@@ -245,21 +259,37 @@ def export_csv(df: pd.DataFrame, output_dir: str = "exports") -> str | None:
         logger.error("DataFrame is empty — nothing to export")
         return None
 
-    try:
-        os.makedirs(output_dir, exist_ok=True)
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        filename  = f"gipc_economic_indicators_{timestamp}.csv"
-        filepath  = os.path.join(output_dir, filename)
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    filename  = f"gipc_economic_indicators_{timestamp}.csv"
 
-        df.to_csv(filepath, index=False)
-        logger.info(f"CSV exported: {filepath}")
-        logger.info(f"Rows: {len(df)} | Columns: {list(df.columns)}")
-        return filepath
+    if os.environ.get("AWS_LAMBDA_FUNCTION_NAME"):
+        import boto3
+        from io import StringIO
 
-    except OSError as e:
-        logger.error(f"Failed to write CSV: {e}")
-        return None
+        csv_buffer = StringIO()
+        df.to_csv(csv_buffer, index=False)
 
+        s3 = boto3.client("s3")
+        bucket = "gipc-platform-processed-datagh26"
+        key = f"exports/{filename}"
+
+        try:
+            s3.put_object(Bucket=bucket, Key=key, Body=csv_buffer.getvalue())
+            logger.info(f"CSV uploaded to s3://{bucket}/{key}")
+            return f"s3://{bucket}/{key}"
+        except Exception as e:
+            logger.error(f"Failed to upload CSV to S3: {e}")
+            return None
+    else:
+        try:
+            os.makedirs(output_dir, exist_ok=True)
+            filepath = os.path.join(output_dir, filename)
+            df.to_csv(filepath, index=False)
+            logger.info(f"CSV exported: {filepath}")
+            return filepath
+        except OSError as e:
+            logger.error(f"Failed to write CSV: {e}")
+            return None
 
 # ── Run Function ───────────────────────────────────────────
 def run(df: pd.DataFrame) -> bool:

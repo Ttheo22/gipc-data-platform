@@ -1,8 +1,22 @@
 import requests
 import logging
+import requests_cache
+import os
+
+# ── Cached session ──────────────────────────────────────────
+# Lambda's only writable path is /tmp — use that for the cache file there,
+# local disk otherwise
+_cache_path = "/tmp/wb_cache" if os.environ.get("AWS_LAMBDA_FUNCTION_NAME") else "wb_cache"
+
+session = requests_cache.CachedSession(
+    _cache_path,
+    backend="sqlite",
+    expire_after=86400,  # 24 hours — indicators don't change intra-day
+)
+
 
 # ── Logging Setup ──────────────────────────────────────────
-import os
+
 
 log_path = "/tmp/pipeline.log" if os.environ.get("AWS_LAMBDA_FUNCTION_NAME") else "pipeline.log"
 
@@ -85,7 +99,7 @@ def fetch_indicator(indicator_code: str, indicator_name: str) -> list[dict]:
     for attempt in range(1, MAX_RETRIES + 1):
         try:
             logger.info(f"Fetching {indicator_name} (attempt {attempt})")
-            response = requests.get(url, timeout=30)
+            response = session.get(url, timeout=30)
             response.raise_for_status()
 
             raw     = response.json()
