@@ -37,3 +37,8 @@ lambda_package/
 lambda_package.zip
 lambda_package_backup.zip
 *.zip
+# Logs and local cache
+pipeline.log
+*.sqlite
+*.sqlite-journal
+*.sqlite-wal

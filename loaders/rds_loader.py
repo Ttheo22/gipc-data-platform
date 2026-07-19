@@ -3,10 +3,10 @@ import logging
 import pandas as pd
 from sqlalchemy import create_engine, text
 from sqlalchemy.exc import OperationalError, SQLAlchemyError
-from dotenv import load_dotenv
 
-
-load_dotenv()
+if not os.environ.get("AWS_LAMBDA_FUNCTION_NAME"):
+    from dotenv import load_dotenv
+    load_dotenv()
 
 # ── Logging Setup ──────────────────────────────────────────
 logger = logging.getLogger(__name__)
