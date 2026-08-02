@@ -42,4 +42,5 @@ pipeline.log
 *.sqlite
 *.sqlite-journal
 *.sqlite-wal
+
 response.json
